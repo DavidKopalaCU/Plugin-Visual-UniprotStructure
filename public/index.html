@@ -2,7 +2,6 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <!-- <meta name="viewport" content="width=device-width, initial-scale=1" /> -->
     <title>Uniprot Structure Plugin</title>
   </head>
   <body>
@@ -10,7 +9,7 @@
     <div id="plugin-uniprot-structure-root"></div>
     <script type="text/javascript">
           window.usp_root_url = "{{ ROOT_URL }}";
-          window.usp_data = "{{ DATA }}";
+          window.usp_data = {{ DATA|tojson|safe }};
     </script>
   </body>
 </html>

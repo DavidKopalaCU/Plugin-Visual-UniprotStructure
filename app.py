@@ -1,11 +1,15 @@
 from posix import listdir
-from flask import Flask, request, abort, render_template, render_template_string, send_from_directory
+from flask import Flask, request, abort, render_template, render_template_string, send_from_directory, jsonify
+from flask_cors import cross_origin
 import os
 import sys
 import traceback
 import json
 
 from flask.helpers import url_for
+from werkzeug.exceptions import BadRequest
+
+from uniprot import UniprotClient
 
 
 app = Flask(__name__)
@@ -36,7 +40,8 @@ def evaluate():
 
 @app.route("/run", methods=["GET", "POST"])
 def run():
-    data = request.get_json(force=True)
+    # data = request.get_json(force=True)
+    data = request.get_json() or dict()
 
     ROOT_URL = '/'.join(request.base_url.split('/')[:3]) + '/'
 
@@ -49,7 +54,30 @@ def run():
     static_js_urls = map(lambda filename: ROOT_URL + url_for('static', filename=f'js/{ filename }'), static_js_files)
     static_css_urls = map(lambda filename: ROOT_URL + url_for('static', filename=f'css/{ filename }'), static_css_files)
     
-    return render_template_string(html_template, js_files=static_js_urls, css_files=static_css_urls, ROOT_URL=ROOT_URL, DATA=json.dumps(data))
+    return render_template_string(html_template, js_files=static_js_urls, css_files=static_css_urls, ROOT_URL=ROOT_URL, DATA=data)
+
+@app.route("/api/uniprot/BLAST", methods=['POST'])
+@cross_origin()
+def uniprot_blast():
+    sequence = request.data
+    if sequence is None:
+        return BadRequest('Missing BLAST sequence')
+
+    return UniprotClient.BLAST(sequence)
+
+@app.route("/api/uniprot/BLAST/<string:blast_id>/status")
+@cross_origin()
+def uniprot_blast_status(blast_id):
+    return UniprotClient.BLASTStatus(blast_id)
+
+@app.route('/api/uniprot/BLAST/<string:blast_id>/results')
+@cross_origin()
+def uniprot_blast_results(blast_id):
+    results = UniprotClient.BLASTResults(blast_id)
+    if results is None:
+        return BadRequest('Invalid BLAST ID')
+
+    return jsonify(results)
 
 
 @app.route("/static/<path:path>", methods=['GET'])
@@ -58,5 +86,4 @@ def get_static_file(path):
 
 @app.route("/<path:path>", methods=['GET'])
 def get_another_file(path):
-    print(path)
     return send_from_directory('/mnt/data/CUBoulder/2021Fall/ECEN4003/plugin-visual-uniprotstructure/build/', path)

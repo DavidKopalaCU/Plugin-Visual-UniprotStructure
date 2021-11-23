@@ -4,15 +4,17 @@ FROM node:lts-alpine
 # RUN apt-get update && apt-get install python -y
 RUN apk add --no-cache python3 py3-pip
 
+COPY package.json package.json
+RUN npm install
+
+COPY requirements.txt requirements.txt
+RUN pip3 install -r requirements.txt
 
 COPY . .
 
 EXPOSE 8080
 
 # Build the React app
-RUN npm install
 RUN npm run build
-
-RUN pip3 install -r requirements.txt
 
 ENTRYPOINT FLASK_APP=app.py flask run --host 0.0.0.0 --port 8080
