@@ -1,12 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
+import App from './pages/main';
 import reportWebVitals from './reportWebVitals';
+
+import UniprotContext from './contexts/uniprot';
+import UniprotServiceFactory from './tools/uniprot/Uniprot';
 
 ReactDOM.hydrate(
   <React.StrictMode>
-    <App />
+    <UniprotContext.Provider value={new UniprotServiceFactory()}>
+      <App />
+    </UniprotContext.Provider>
   </React.StrictMode>,
   document.getElementById('plugin-uniprot-structure-root')
 );
