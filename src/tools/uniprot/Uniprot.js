@@ -1,6 +1,9 @@
 import BLASTService from './BLASTService';
 import RDFService from './RDFService';
 
+/**
+ * Your one-stop-shop for configuring all Uniprot services
+ */
 export default class UniprotServiceFactory {
 
     BASE_URL = null;
@@ -18,6 +21,7 @@ export default class UniprotServiceFactory {
         this.RDF_API_PATH = rdf_api_path;
     }
 
+    // TODO: Cache these instances once they are created for better performance and better rendering behaviors
     BLASTService = () => new BLASTService(`${ this.BASE_URL }/${ this.BLAST_API_PATH }`);
     RDFService = () => new RDFService(`${ this.BASE_URL }/${ this.RDF_API_PATH }`);
 

@@ -9,6 +9,7 @@ import UniprotServiceFactory from './tools/uniprot/Uniprot';
 
 ReactDOM.hydrate(
   <React.StrictMode>
+    {/* Provide a pre-configured Uniprot Service Factory that the rest of the app can just grab */}
     <UniprotContext.Provider value={new UniprotServiceFactory()}>
       <App />
     </UniprotContext.Provider>

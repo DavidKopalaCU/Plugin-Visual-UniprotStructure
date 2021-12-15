@@ -6,6 +6,8 @@ A visual plugin for SynBioHub (SBH) that displays the folded structure of a prot
 Create a symlink for the static directory
 ```bash
 $ cd plugin-visual-uniprotstructure
+$ npm install
+$ npm run build
 $ ln -s build/static static
 ```
 ## Using docker
@@ -17,6 +19,9 @@ $ docker run -d -p 8080:8080 plugin-visual-uniprotstructure
 Confirm it is running by loading http://localhost:8080/status
 
 > NOTE: The Dockerfile takes care of building the project (including Javascript files).
+
+## Register with SynBioHub
+Register the plugin with SynBioHub by adding `http://<IP_ADDRESS>:8080/` to the plugins section of the Admin menu, where `IP_ADDRESS` is the IP Address of the machine hosting the plugin.
 
 ## Using Python
 Run `pip install -r requirements.txt` to install the requirements. Then run `FLASK_APP=app python -m flask run`. A flask module will run at http://localhost:5000/.
